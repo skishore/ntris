@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "Remember to renew Kerberos tickets first!"
+echo "Compiling java files..."
+cd ntris_src
+rm *.class
+javac *.java
+cd ..
+echo "Creating signed jar..."
+jar -cf ntris.jar ntris_src/*
+jarsigner -keystore ~/.keystore -storepass 8triumphforks ntris.jar mykey
+jarsigner -verify -keystore ~/.keystore ntris.jar
+echo "Moving jar into test environment..."
+mv ntris.jar test_env/ntris.jar
+echo "Copying jar to ntris.mit.edu..."
+scp test_env/ntris.jar linerva.mit.edu:~/web_scripts/ntris/ntris.jar
